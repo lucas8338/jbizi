@@ -118,6 +118,7 @@ public class Jbizi {
         new File("./testsOut/compile").mkdir();
         new File("./testsOut/artifact").mkdir();
         new File("./testsOut/etc").mkdir();
+        new File("./etc").mkdir();
 
         if (!silent) {
             this.getLogger().info("creating project files");
@@ -396,7 +397,7 @@ public class Jbizi {
                 Arrays.asList("javac", "--class-path", "./tests;./src;./lib;./lib/*;./resources", "-d", "./testsOut/compile")
         );
 
-        // here look tests will not get additional compile commands.
+        new AddAdditionalCompileArgs(commandCompileTests).add();
 
         List<String> testsFilesToCompile = FileUtils.listFiles(new File("./tests"), new String[]{"java"}, true).stream().map(x -> x.getAbsolutePath()).toList();
 
