@@ -96,7 +96,7 @@ the executable of this project project is a bit big. so you can use this of two 
 
  - with the executable in the project root.
  - in any directory with a bash script (.bat, .cmd or .sh) with the command to run the .jar (must capture the arguments) and their directory added to the system path.
-working example:
+working example (change the executable jar name by your correct version):
    - "**jbizi.cmd**" at `C:/jbizi` directory:
 		```
 		java -jar C:/jbizi/jbizi-1.0.0.0-withDependencies.jar %*
