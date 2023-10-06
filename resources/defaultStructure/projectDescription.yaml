@@ -1,0 +1,6 @@
+name: yourProjectName
+version: 0.0.1.0
+mainClass: yourPackage.YourMainClass
+description: yourProjectDescription
+author: yourName
+url: yourUrl

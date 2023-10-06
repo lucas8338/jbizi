@@ -1,0 +1,6 @@
+name: example2
+version: 0.0.1.0
+mainClass: ex.Main
+description: just a simple example, this example must fail in testing.
+author: lucas Monteiro
+url: github.com/lucas8338

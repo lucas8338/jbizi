@@ -1,0 +1,10 @@
+name: jbizi
+version: 1.0.0.0
+mainClass: jbizi.Jbizi
+description: a directory based easy to use build tool for java.
+author: lucas Monteiro
+url: github.com/lucas8338/jbizi
+
+additionalCompileArgs:
+    '-target': 16
+    '-source': 16

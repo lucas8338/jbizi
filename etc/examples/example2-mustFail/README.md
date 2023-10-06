@@ -1,0 +1,2 @@
+this project has proposital testing errors in tests. the objective is to test if the testing tool is working. there two files in tests/tests directory, when running 'test' in this project should not to pass.
+**must have 2 test files, 6 tests total, 4 tests passed, 2 tests failed.**

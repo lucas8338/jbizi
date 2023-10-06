@@ -1,0 +1,5 @@
+# [jbizi] ignote the output of 'src'.
+srcOut/
+
+# [jbizi] ignore the output of 'tests'.
+testsOut/
