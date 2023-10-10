@@ -1,0 +1,6 @@
+name: example3
+version: 0.0.1.0
+mainClass: ex3.Ex3
+description: example to test the build tool to work with tests which require a dependency.
+author: Lucas Monteiro
+url: github.com/lucas8338/jbizi
