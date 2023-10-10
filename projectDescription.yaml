@@ -1,5 +1,5 @@
 name: jbizi
-version: 1.0.1.0
+version: 1.0.2.0
 mainClass: jbizi.Jbizi
 description: a directory based easy to use build tool for java.
 author: lucas Monteiro

@@ -6,7 +6,6 @@ import org.testng.TestNG;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,24 +35,39 @@ public class TestsRunner {
 
         List<Class<?>> testClasses = new ArrayList<Class<?>>();
 
-        // class loader to be the parent
-        URLClassLoader parentCl = new URLClassLoader(new URL[]{new File(this.dir).getAbsoluteFile().toURI().toURL()}, this.getClass().getClassLoader());
+        // contains the 'lib' directory and each jar in the './lib' direcotyr.
+        List<File> lib = new ArrayList<File>();
+        lib.add(new File("./lib"));
+        lib.addAll(FileUtils.listFiles(new File("./lib"), new String[]{"jar"}, false));
 
-        // add the 'this.dir' to the class path.
-        URLClassLoader ucl = new URLClassLoader(new URL[]{new File(this.dir).getAbsoluteFile().toURI().toURL()}, parentCl);
+        File targetRoot = new File(this.dir);
+
+        List<URL> urls = new ArrayList<URL>();
+
+        for (File file : lib) {
+            urls.add(file.toURI().toURL());
+        }
+
+        urls.add(targetRoot.toURI().toURL());
+
+        // the parent class loader where the dependencies will look for dependencies.
+        URLClassLoader purl = new URLClassLoader(urls.toArray(new URL[0]), ClassLoader.getSystemClassLoader());
+
+        // the main loader used to load classes.
+        URLClassLoader ucl = new URLClassLoader(urls.toArray(new URL[0]), purl);
 
         /*
-        * above was required a UrlClassLoader as parent of another UrlClass loader because the 'UrlClassLoader' doesn't
-        * work recursively, example, if a class loaded by a UrlClassLoader has a requirement that is even inside the
-        * UrlClassLoader path but that required class will not be found here is the reason:
-        * example (read line by line each line is a step):
-        * ClassLoad loads url: './testsOut/compile'
-        * ClassLoad loads class: 'tests.Test1'
-        * 'tests.Test1' ask for a class named 'main.Calculate'  //this will cause an error, because the class load cant find 'test.Test1' even if that class is inside the url given to the class loader.
-        *                                                         to solve this problem is needed to use a class loader which contains that url as parent of the class loader which will load the class.
-        *                                                         the class load which is loading the class will ask by the desired class to the parent class load that now can load that class successful.
-        *                                                         and look out parent class load also has a parent, the class loader of this class, this way the parent class loader can access the 'systemClassLoader' too.
-        * */
+         * above was required a UrlClassLoader as parent of another UrlClass loader because the 'UrlClassLoader' doesn't
+         * work recursively, example, if a class loaded by a UrlClassLoader has a requirement that is even inside the
+         * UrlClassLoader path but that required class will not be found here is the reason:
+         * example (read line by line each line is a step):
+         * ClassLoad loads url: './testsOut/compile'
+         * ClassLoad loads class: 'tests.Test1'
+         * 'tests.Test1' ask for a class named 'main.Calculate'  //'main.Calculate' is located inside './testsOut/compile'
+         *                                                         this will cause an error, because the class load cant find 'main.Calculate' even if that class is inside the url given to the class loader.
+         *                                                         to solve this problem is needed to use a class loader which contains that url as parent of the class loader which will load the class.
+         *                                                         because dependencies are all searched in the parent classloader.
+         * */
 
         // get all files in the 'this.dir/tests' will apply a regex to extract the class name.
         for (File file : FileUtils.listFiles(new File(this.dir + "/tests"), null, false)) {
