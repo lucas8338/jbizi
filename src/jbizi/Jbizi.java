@@ -35,6 +35,7 @@ import java.util.Map;
                             |---artifact         -> store the output of the artifact generation of the 'tests' directory.
                             |---etc              -> general purpose directory related to 'tests' output.
                         etc                      -> general purpose directory.
+                            |---testsResources   -> directory to store tests data.
                         projectDescription.yaml  -> a yaml file describing the project information and configuration.
                                         
                         [COMPILATION CLASS-PATH STRUCTURE]:
@@ -52,6 +53,7 @@ import java.util.Map;
                         additionalCompileArgs  -> key and value, additional parameters to be passed to the 'javac' command. this must be a yaml key value (sub-yaml).
                                                   the 'key' is the parameter name e.g. ''-target'' (in yaml '-' is a designator for list, so you need to enclose the key in parenthesis
                                                   if the parameter starts with '-'). if the parameter doest have a value e.g. '-verbose', the key value must be an empty string.
+                        additionalClassPaths   -> a list with additional class path to add to the compilation command.
                                         
                         [ARTIFACTS NAMES LOGIC]:
                         jar      -> {name}-{version}.jar
@@ -119,6 +121,7 @@ public class Jbizi {
         new File("./testsOut/artifact").mkdir();
         new File("./testsOut/etc").mkdir();
         new File("./etc").mkdir();
+        new File("./etc/testsResources").mkdir();
 
         if (!silent) {
             this.getLogger().info("creating project files");
@@ -169,9 +172,11 @@ public class Jbizi {
         List<String> compileCommand = new ArrayList<String>();
         compileCommand.addAll(
                 Arrays.asList(
-                        "javac", "--class-path", "./src;./lib;./lib/*;./resources", "-d", "./srcOut/compile"
+                        "javac", "-d", "./srcOut/compile", "--class-path"
                 )
         );
+
+        compileCommand.add(new CPPaths().main());
 
         new AddAdditionalCompileArgs(compileCommand).add();
 
@@ -320,12 +325,13 @@ public class Jbizi {
         List<String> javadocCommand = new ArrayList<String>(
                 Arrays.asList(
                         "javadoc",
-                        "--class-path",
-                        "./src;./lib;./lib/*;./resources",
                         "-d",
-                        "./srcOut/javadoc"
+                        "./srcOut/javadoc",
+                        "--class-path"
                 )
         );
+
+        javadocCommand.add(new CPPaths().main());
 
         List<String> javaFilesInSrc = FileUtils.listFiles(new File("./src"), new String[]{"java"}, true).stream().map(x -> x.getAbsolutePath()).toList();
 
@@ -394,8 +400,10 @@ public class Jbizi {
     @CommandLine.Command(mixinStandardHelpOptions = true, description = "run tests.")
     public void test() throws Exception {
         List<String> commandCompileTests = new ArrayList<>(
-                Arrays.asList("javac", "--class-path", "./tests;./src;./lib;./lib/*;./resources", "-d", "./testsOut/compile")
+                Arrays.asList("javac", "-d", "./testsOut/compile", "--class-path")
         );
+
+        commandCompileTests.add(new CPPaths().tests());
 
         new AddAdditionalCompileArgs(commandCompileTests).add();
 

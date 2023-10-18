@@ -50,6 +50,39 @@ public class TestsRunner {
 
         urls.add(targetRoot.toURI().toURL());
 
+        // add the additionalClassPaths project description paths to the 'url' variable.
+
+        CPPaths cppPaths = new CPPaths();
+
+        // to get the paths added this will get the difference between the 'defaultTests' parameter variable
+        // of the CPPaths class and the path with added class paths.
+
+        String[] standard = cppPaths.defaultTests;
+
+        String[] afterAddition = cppPaths.tests().split(";");
+
+        List<String> added = new ArrayList<String>();
+
+        for ( String path: afterAddition ){
+            if ( !new ArrayList<String>(List.of(standard)).contains(path) ){
+                added.add(path);
+            }
+        }
+
+        for ( String path: added ){
+            if ( path.endsWith("*") ){
+                // will select '-2' to avoid the '*' character.
+                File file = new File(path.substring(0, path.length() - 2));
+                List<File> files = FileUtils.listFiles(file, new String[]{"jar"}, false).stream().toList();
+                for ( File jar: files ){
+                    urls.add(jar.toURI().toURL());
+                }
+            }else{
+                File file = new File(path);
+                urls.add(file.toURI().toURL());
+            }
+        }
+
         // the parent class loader where the dependencies will look for dependencies.
         URLClassLoader purl = new URLClassLoader(urls.toArray(new URL[0]), ClassLoader.getSystemClassLoader());
 

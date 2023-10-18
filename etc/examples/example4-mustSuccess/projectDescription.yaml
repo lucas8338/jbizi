@@ -1,0 +1,10 @@
+name: example4
+version: 0.0.1.0
+mainClass: ex.Ex
+description: example to test the additionalClassPaths configuration.
+author: Lucas Monteiro
+url: github.com/lucas8338/jbizi
+
+additionalClassPaths: 
+    - "./etc/simulatesAnotherDirectory/*" # here will test when using the 'asterisk'
+    - "./etc/simulatesAnotherDirectory2/commons-io-2.14.0.jar" # here will test when using the path.
